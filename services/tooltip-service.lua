@@ -79,21 +79,24 @@ function TooltipService:CheckTooltip(tooltip)
     local skillId, skill, professionId = nil;
 
     -- check for item link
-    local _, itemLink = GameTooltip:GetItem();
+    local _, itemLink = tooltip:GetItem()
     if (itemLink) then
         -- find skill by item link
-        skillId, skill, professionId = addon:GetService("professions"):FindSkillByItemLink(itemLink);
+        skillId, skill, professionId = addon:GetService("professions"):FindSkillByItemLink(itemLink)
     end
 
     -- check if skill not found yet
     if (not skill) then
         -- check if small text is reagents
-        local text1 = GameTooltipTextLeft1:GetText();
-        local text2 = GameTooltipTextLeft2:GetText();
-        local text3 = GameTooltipTextLeft3:GetText();
-        if (text1 and (text2 and string.find(text2, SPELL_REAGENTS) == 1 or text3 and string.find(text3, SPELL_REAGENTS) == 1)) then
-            -- find skill by name
-            skillId, skill, professionId = addon:GetService("professions"):FindSkillByName(text1);
+        local ttGlobalName = tooltip:GetName()
+        if ttGlobalName and ttGlobalName ~= "" then
+            local text1 = _G[ttGlobalName .. "TextLeft1"] and _G[ttGlobalName .. "TextLeft1"]:GetText()
+            local text2 = _G[ttGlobalName .. "TextLeft1"] and _G[ttGlobalName .. "TextLeft2"]:GetText()
+            local text3 = _G[ttGlobalName .. "TextLeft1"] and _G[ttGlobalName .. "TextLeft3"]:GetText()
+            if (text1 and (text2 and string.find(text2, SPELL_REAGENTS) == 1 or text3 and string.find(text3, SPELL_REAGENTS) == 1)) then
+                -- find skill by name
+                skillId, skill, professionId = addon:GetService("professions"):FindSkillByName(text1)
+            end
         end
     end
 
